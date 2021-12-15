@@ -20,7 +20,6 @@ sequelize.sync({ force: false })
     console.error(err);
   });
 
-
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,7 +34,7 @@ app.use(session({
     },
 }));
 
-app.use('/', Router);
+app.use('/api', Router);
 
 /* 404 처리 */
 app.use((req, res, next) => {
