@@ -1,6 +1,6 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const bcrypt = require("bcrypt");
+const SHA256 = require('crypto-js/sha256');
 
 const { User } = require("../models");
 
@@ -12,12 +12,11 @@ module.exports = () => {
         passwordField: "password",
       },
       async (email, password, done) => {
-
         try {
           const exUser = await User.findOne({ where: { email } });
-          if (exUser) {
-            const result = await bcrypt.compare(password, exUser.password);
-            if (result) {
+          if (exUser) {            
+            const hashedPassword = SHA256(password + email).toString();
+            if (exUser.password == hashedPassword) {
               done(null, exUser);
             } else {
               done(null, false, { message: "비밀번호가 일치하지 않습니다" });

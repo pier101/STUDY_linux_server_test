@@ -11,6 +11,9 @@ const home = () => {
         <li>
           <Link to="./register">register</Link>
         </li>
+        {/* <li>
+          <Link to="./logout">logout</Link>
+        </li> */}
       </ul>
     </div>
   )
