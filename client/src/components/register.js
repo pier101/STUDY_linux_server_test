@@ -1,7 +1,9 @@
 import Axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from "react-router-dom";
 
 const Register = (props) => {
+  let navigate = useNavigate();
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [Name, setName] = useState("");
@@ -36,13 +38,12 @@ const Register = (props) => {
       nick: Name,
     };
     
-    console.log(body);
     Axios.post("/api/register", body)
       .then((response) => {
         console.log(response);
         if (response.data.success) {
           alert("회원가입 되었습니다.");
-          props.history.push("/login");
+          navigate("/login");
         } else {
           alert("실패했습니다.");
         }
