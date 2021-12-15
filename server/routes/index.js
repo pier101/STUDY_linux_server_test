@@ -1,18 +1,11 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const register = require('./register');
+const login = require('./login');
+const logout = require('./logout');
 
-const maria = require('../maria');
-
-/* GET home page. */
-router.get('/', (req, res, next) => {
-  maria.query('select * from test', (err, rows, fields) => {
-    if(!err) {
-      res.send(rows);
-    } else {
-      console.log("err : " + err);
-      res.status(500).json({ err });
-    }
-  });
-});
+router.use('/register', register);
+router.use('/login', login);
+router.use('/logout', logout);
 
 module.exports = router;
