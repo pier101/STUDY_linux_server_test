@@ -4,7 +4,6 @@ const passport = require('passport');
 const { User } = require("../models");
 
 router.post('/', async (req, res, next) => {
-  console.log(req.body);
   const Login = await User.findOne({
     where: {
       email: req.body.email,

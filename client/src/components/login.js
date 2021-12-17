@@ -16,7 +16,7 @@ const Login = () => {
   }
 
   const onSubmitHandler = (event) => {
-    event.preventDefault();   // 페이지가 버튼 누를 때마다 새로고침 되지 않게 넣어둔다.
+    event.preventDefault(); 
 
     let body = {
       email: Email,
@@ -25,8 +25,9 @@ const Login = () => {
 
     Axios.post("/api/login", body)
       .then(response => {
+        console.log(response);
         if (response.data.loginSuccess) {
-          navigate('/') // 리액트에서 페이지 이동하는 방법
+          navigate('/')
         } else {
           alert('Error')
         }
