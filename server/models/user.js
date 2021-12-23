@@ -15,22 +15,13 @@ module.exports = class User extends Sequelize.Model {
           allowNull: false,
         },
         password: {
-          type: Sequelize.STRING(100),
+          type: Sequelize.STRING(150),
           allowNull: true,
-        },
-        provider: {
-          type: Sequelize.STRING(10),
-          allowNull: false,
-          defaultValue: "local",
-        },
-        snsId: {
-          type: Sequelize.STRING(30),
-          allowNull: true,
-        },
+        }
       },
       {
         sequelize,
-        timestamps: true,
+        timestamps: false,
         underscored: false,
         modelName: "User",
         tableName: "users",
@@ -40,4 +31,5 @@ module.exports = class User extends Sequelize.Model {
       }
     );
   }
+  static associate(db){}
 };

@@ -1,5 +1,5 @@
-import Axios from 'axios';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Register = () => {
@@ -8,6 +8,18 @@ const Register = () => {
   const [Password, setPassword] = useState("");
   const [Name, setName] = useState("");
   const [ConfirmPassword , setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    axios.get('/api/auth/loginCheck').then(res=>{
+      if (res.data.loggedIn) {
+        console.log(res.data)
+        console.log("로그인 유지중")
+      } else {
+        console.log("로그인 안 한 상태")
+      }
+    })
+    .catch()
+  }, [])
 
   const onEmailHandler = (event) => {
     setEmail(event.currentTarget.value);
@@ -38,13 +50,16 @@ const Register = () => {
       nick: Name,
     };
     
-    Axios.post("/api/register", body)
-      .then((response) => {
-        console.log(response);
-        if (response.data.success) {
-          alert("회원가입 되었습니다.");
+    axios.post('/api/auth/register', body)
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "email존재") {
+          alert("회원가입 된 email입니다.");
+          navigate("/register");
+        } else if(res.data === true){
+          alert("회원가입 완료!");
           navigate("/login");
-        } else {
+        } else{
           alert("실패했습니다.");
         }
       });

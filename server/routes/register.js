@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { User } = require('../models');
+const User = require('../models/user');
 const SHA256 = require('crypto-js/sha256');
 
 router.post('/', async (req, res, next) => {
@@ -15,7 +15,7 @@ router.post('/', async (req, res, next) => {
     }
 
     const hashedPassword = SHA256(req.body.password + req.body.email).toString();
-
+    console.log(req.body.email)
     await User.create({
       email: req.body.email,
       nick: req.body.nick,

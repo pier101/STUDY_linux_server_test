@@ -1,11 +1,24 @@
-import Axios from 'axios';
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useState,useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   let navigate = useNavigate();
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
+
+  useEffect(() => {
+    axios.get('/api/auth/loginCheck').then(res=>{
+      if (res.data.loggedIn) {
+        console.log(res.data.loginData)
+        console.log("로그인 유지중")
+      } else {
+        console.log(res.data.loginData)
+        console.log("로그인 안 한 상태")
+      }
+    })
+    .catch()
+  }, [])
 
   const onEmailHandler = (event) => {
     setEmail(event.currentTarget.value);
@@ -23,16 +36,19 @@ const Login = () => {
       password: Password,
     };
 
-    Axios.post("/api/login", body)
-      .then(response => {
-        console.log(response);
-        if (response.data.loginSuccess) {
+    axios.post('/api/auth/login', body)
+      .then((res) => {
+        if (res.data.loginSuccess) {
+          console.log('로그인 성공')
           navigate('/')
-        } else {
-          alert('Error')
+        }
+        if (!res.data.loginSuccess) {
+          alert('로그인에 실패 아디 비번 확인 해주세요')
         }
       })  
   }
+
+
 
   return (
     <div style={{

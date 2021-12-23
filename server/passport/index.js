@@ -1,10 +1,10 @@
 const passport = require('passport');
-const local = require('./local');
-const { User } = require('../models');
+const local = require('./localStrategy');
+const User = require('../models/user');
 
 module.exports = () => {
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, user.id); //세션에 유저 아이디만 저장
   });
   passport.deserializeUser((id, done) => {
     User.findOne({
@@ -13,5 +13,5 @@ module.exports = () => {
       .then((user) => done(null, user))
       .catch((err) => done(err));
   });
-  local();
+  local(passport);
 };

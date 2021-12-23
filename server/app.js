@@ -4,43 +4,60 @@ const morgan = require('morgan');
 const session = require('express-session');
 const dotenv = require('dotenv');
 const passport = require("passport");
-const { sequelize } = require('./models');
 const passportConfig = require("./passport");
+const { sequelize } = require('./models');
+const cors = require('cors')
+const authRouter = require('./routes/auth');    
+const FileStore = require('session-file-store')(session)
+const path =require('path')
+
 
 dotenv.config();
-
-const Router = require('./routes');    
-
 const app = express();
-passportConfig(); // 패스포트 설정
+passportConfig(passport); // 패스포트 설정
 
-app.set('port', process.env.PORT || 8002);
+const port = 5000;
 
 sequelize.sync({ force: false })
-  .then(() => {
-    console.log('데이터베이스 연결 성공');
-  })
-  .catch((err) => {
-    console.error(err);
-  });
-
+.then(() => {
+  console.log('데이터베이스 연결 성공');
+})
+.catch((err) => {
+  console.error(err);
+});
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// app.use(express.static(path.join(__dirname, "client", "build")));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true, 
+}));
 app.use(session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-    },
+  resave: false,
+  secret: process.env.COOKIE_SECRET,
+  saveUninitialized: false,
+  cookie: {
+    expires: 60 * 60 * 24,
+    httpOnly:true,
+    secure:false,
+  },
+  store:new FileStore()
 }));
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api', Router);
+// middleware
+
+// route
+// app.get("/*", function (req, res) {
+//   res.sendFile(__dirname + "/client/build/index.html");
+// });
+
+
+// app.use('/auth', authRouter)
+app.use('/api/auth', authRouter)
 
 /* 404 처리 */
 app.use((req, res, next) => {
@@ -56,7 +73,6 @@ app.use((err, req, res, next) => {
     res.status(err.status || 500);
     res.status(500).json({err});
 });
-
-app.listen(app.get('port'), () => {
-    console.log(app.get('port'), '번 포트에서 대기중');
+app.listen(port, () => {
+  console.log(`${port}번 포트에 연결`);
 });

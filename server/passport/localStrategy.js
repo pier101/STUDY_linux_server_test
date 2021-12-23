@@ -1,10 +1,11 @@
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
-const SHA256 = require('crypto-js/sha256');
+const crypto = require('crypto');
 
-const { User } = require("../models");
+const User = require("../models/user");
 
 module.exports = () => {
+
   passport.use(
     new LocalStrategy(
       {
@@ -13,10 +14,10 @@ module.exports = () => {
       },
       async (email, password, done) => {
         try {
-          const exUser = await User.findOne({ where: { email } });
+          const exUser = await User.findOne({ where: { email:email } });
           if (exUser) {            
-            const hashedPassword = SHA256(password + email).toString();
-            if (exUser.password == hashedPassword) {
+            const pwd = crypto.createHash('sha256').update(password).digest('base64')
+            if (exUser.password == pwd) {
               done(null, exUser);
             } else {
               done(null, false, { message: "비밀번호가 일치하지 않습니다" });
@@ -28,7 +29,8 @@ module.exports = () => {
           console.log(error);
           done(error);
         }
+
       }
-    )
+      ),
   );
 };
