@@ -16,11 +16,10 @@ dotenv.config();
 const app = express();
 passportConfig(passport); // 패스포트 설정
 
-const port = 5000;
-
+const port = 5000
 sequelize.sync({ force: false })
 .then(() => {
-  console.log('데이터베이스 연결 성공');
+  console.log('maria 연결 성공^^');
 })
 .catch((err) => {
   console.error(err);
@@ -47,13 +46,6 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-
-// middleware
-
-// route
-// app.get("/*", function (req, res) {
-//   res.sendFile(__dirname + "/client/build/index.html");
-// });
 
 
 // app.use('/auth', authRouter)
